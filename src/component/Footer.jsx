@@ -1,7 +1,16 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 const Footer = () => {
+  const [currentYear, setCurrentYear] = useState(2026);
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
+
   return (
     <footer className="w-full bg-zinc-950 border-t border-zinc-800 text-zinc-400">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
@@ -22,7 +31,7 @@ const Footer = () => {
               Jibika (জীবিকা) is Bangladesh&apos;s premier modern job portal, connecting talented job seekers with top employers to build meaningful careers and drive professional growth.
             </p>
             <div className="text-xs text-zinc-500 pt-2">
-              © {new Date().getFullYear()} Jibika. All rights reserved.
+              © {currentYear} Jibika. All rights reserved.
             </div>
           </div>
 
