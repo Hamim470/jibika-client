@@ -1,0 +1,46 @@
+import { getUserToken } from "./session";
+
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+// sy
+export const authHeader = async () => {
+    const token = await getUserToken();
+    const header = token ? {
+        authorization: `Bearer ${token}`
+    } : {};
+    return header;
+}
+
+export const serverFetch = async (path) => {
+    const res = await fetch(`${baseUrl}${path}`);
+    // handle 401,404,403
+    return res.json();
+}
+
+// sy
+export const protectedFetch=async(path)=>{
+    const res = await fetch(`${baseUrl}${path}`,
+        {
+            headers: await authHeader()
+        }
+    );
+
+    // handle 401,404,403
+    
+    return res.json();
+}
+
+export const serverMutation = async (path, data, method = 'POST') => {
+    const res = await fetch(`${baseUrl}${path}`, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+            ...await authHeader() //sy
+        },
+        body: JSON.stringify(data),
+    });
+
+    // handle 401,404,403
+
+    return res.json();
+};

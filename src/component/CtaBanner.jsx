@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "motion/react";
 
 const CtaBanner = () => {
   return (
@@ -30,35 +33,63 @@ const CtaBanner = () => {
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 max-w-4xl mx-auto px-4 text-center space-y-6">
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="relative z-10 max-w-4xl mx-auto px-4 text-center space-y-6"
+      >
         
         {/* Main Headline */}
-        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white max-w-2xl mx-auto leading-[1.15]">
+        <motion.h2 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+          className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white max-w-2xl mx-auto leading-[1.15]"
+        >
           Your next role is already looking for you
-        </h2>
+        </motion.h2>
 
         {/* Subheadline */}
-        <p className="text-sm sm:text-base text-zinc-400 font-normal max-w-lg mx-auto">
+        <motion.p 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+          className="text-sm sm:text-base text-zinc-400 font-normal max-w-lg mx-auto"
+        >
           Build a profile in three minutes. The matches start arriving tomorrow morning.
-        </p>
+        </motion.p>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-          <Link
-            href="/register"
-            className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-white text-zinc-950 font-semibold text-sm hover:bg-zinc-200 transition-all shadow-xl"
-          >
-            Create a free account
-          </Link>
-          <Link
-            href="/pricing"
-            className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-zinc-900/80 border border-zinc-800 text-white font-semibold text-sm hover:bg-zinc-800 hover:border-zinc-700 transition-all backdrop-blur-md"
-          >
-            View pricing
-          </Link>
-        </div>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
+        >
+          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
+            <Link
+              href="/auth/signup"
+              className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-white text-zinc-950 font-semibold text-sm hover:bg-zinc-200 transition-all shadow-xl block text-center"
+            >
+              Create a free account
+            </Link>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
+            <Link
+              href="/pricing"
+              className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-zinc-900/80 border border-zinc-800 text-white font-semibold text-sm hover:bg-zinc-800 hover:border-zinc-700 transition-all backdrop-blur-md block text-center"
+            >
+              View pricing
+            </Link>
+          </motion.div>
+        </motion.div>
 
-      </div>
+      </motion.div>
     </section>
   );
 };

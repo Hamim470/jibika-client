@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { motion } from "motion/react";
 
 const Footer = () => {
   const [currentYear, setCurrentYear] = useState(2026);
@@ -12,8 +13,14 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="w-full bg-zinc-950 border-t border-zinc-800 text-zinc-400">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+    <footer className="w-full bg-zinc-950 border-t border-zinc-800 text-zinc-400 overflow-hidden">
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           
           {/* Brand Info */}
@@ -132,7 +139,7 @@ const Footer = () => {
             <span className="hover:text-zinc-300 cursor-pointer transition-colors">English / বাংলা</span>
           </div>
         </div>
-      </div>
+      </motion.div>
     </footer>
   );
 };

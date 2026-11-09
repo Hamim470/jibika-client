@@ -1,3 +1,7 @@
+"use client";
+
+import { motion } from "motion/react";
+
 const FeaturesSection = () => {
   const features = [
     {
@@ -75,11 +79,17 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <section className="w-full py-20 bg-zinc-950 text-white border-t border-zinc-800">
+    <section className="w-full py-20 bg-zinc-950 text-white border-t border-zinc-800 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="text-center max-w-2xl mx-auto mb-16 space-y-3"
+        >
           <div className="flex items-center justify-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
             <span className="text-xs font-semibold uppercase tracking-widest text-emerald-400">
@@ -90,14 +100,19 @@ const FeaturesSection = () => {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
             Everything you need to succeed
           </h2>
-        </div>
+        </motion.div>
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
-            <div
+            <motion.div
               key={index}
-              className="p-6 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 hover:border-emerald-500/50 transition-all shadow-lg flex flex-col gap-4 group"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: index * 0.08, ease: "easeOut" }}
+              whileHover={{ y: -4 }}
+              className="p-6 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 hover:border-emerald-500/50 transition-colors shadow-lg flex flex-col gap-4 group"
             >
               {/* Icon Box */}
               <div className="w-12 h-12 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-center group-hover:border-emerald-500/40 transition-colors">
@@ -113,7 +128,7 @@ const FeaturesSection = () => {
                   {feature.description}
                 </p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 

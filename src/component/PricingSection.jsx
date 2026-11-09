@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { motion } from "motion/react";
 
 const PricingSection = () => {
   const [isYearly, setIsYearly] = useState(false);
 
-  // Pricing tiers matching your project specifications & screenshot layout
+  // Pricing tiers matching your project specifications & layout
   const plans = [
     {
       name: "Starter",
@@ -22,7 +23,7 @@ const PricingSection = () => {
       ],
       isPopular: false,
       ctaText: "Choose This Plan",
-      ctaLink: "/register",
+      ctaLink: "/auth/signup",
     },
     {
       name: "Growth",
@@ -38,7 +39,7 @@ const PricingSection = () => {
       ],
       isPopular: true,
       ctaText: "Choose This Plan",
-      ctaLink: "/register?plan=growth",
+      ctaLink: "/auth/signup?plan=growth",
     },
     {
       name: "Premium",
@@ -54,16 +55,22 @@ const PricingSection = () => {
       ],
       isPopular: false,
       ctaText: "Choose This Plan",
-      ctaLink: "/register?plan=premium",
+      ctaLink: "/auth/signup?plan=premium",
     },
   ];
 
   return (
-    <section className="w-full py-20 bg-zinc-950 text-white border-t border-zinc-800">
+    <section className="w-full py-20 bg-zinc-950 text-white border-t border-zinc-800 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="text-center max-w-2xl mx-auto mb-12 space-y-3"
+        >
           <div className="flex items-center justify-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
             <span className="text-xs font-semibold uppercase tracking-widest text-emerald-400">
@@ -74,36 +81,54 @@ const PricingSection = () => {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
             Pay for the leverage,<br />not the listings
           </h2>
-        </div>
+        </motion.div>
 
         {/* Billing Toggle Switch */}
-        <div className="flex justify-center mb-16">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+          className="flex justify-center mb-16"
+        >
           <div className="inline-flex items-center p-1.5 rounded-full bg-zinc-900 border border-zinc-800">
             <button
               onClick={() => setIsYearly(false)}
-              className={`px-6 py-2 rounded-full text-xs font-semibold transition-all ${
-                !isYearly 
-                  ? "bg-white text-zinc-950 shadow-md" 
-                  : "text-zinc-400 hover:text-white"
+              className={`relative px-6 py-2 rounded-full text-xs font-semibold transition-colors ${
+                !isYearly ? "text-zinc-950" : "text-zinc-400 hover:text-white"
               }`}
             >
-              Monthly
+              {!isYearly && (
+                <motion.div 
+                  layoutId="activeToggle"
+                  className="absolute inset-0 bg-white rounded-full shadow-md z-0"
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10">Monthly</span>
             </button>
             <button
               onClick={() => setIsYearly(true)}
-              className={`px-6 py-2 rounded-full text-xs font-semibold flex items-center gap-2 transition-all ${
-                isYearly 
-                  ? "bg-white text-zinc-950 shadow-md" 
-                  : "text-zinc-400 hover:text-white"
+              className={`relative px-6 py-2 rounded-full text-xs font-semibold flex items-center gap-2 transition-colors ${
+                isYearly ? "text-zinc-950" : "text-zinc-400 hover:text-white"
               }`}
             >
-              Yearly
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-pink-600 text-white animate-pulse">
-                25%
+              {isYearly && (
+                <motion.div 
+                  layoutId="activeToggle"
+                  className="absolute inset-0 bg-white rounded-full shadow-md z-0"
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-2">
+                Yearly
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-pink-600 text-white animate-pulse">
+                  25%
+                </span>
               </span>
             </button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Pricing Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -111,9 +136,14 @@ const PricingSection = () => {
             const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
 
             return (
-              <div
+              <motion.div
                 key={index}
-                className={`relative p-8 rounded-3xl bg-zinc-900/60 border flex flex-col justify-between transition-all backdrop-blur-md shadow-xl ${
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
+                whileHover={{ y: -6 }}
+                className={`relative p-8 rounded-3xl bg-zinc-900/60 border flex flex-col justify-between transition-colors backdrop-blur-md shadow-xl ${
                   plan.isPopular 
                     ? "border-emerald-500/60 ring-2 ring-emerald-500/20 bg-gradient-to-b from-zinc-900/90 to-zinc-950" 
                     : "border-zinc-800 hover:border-zinc-700"
@@ -160,21 +190,23 @@ const PricingSection = () => {
 
                 {/* CTA Button */}
                 <div>
-                  <Link
-                    href={plan.ctaLink}
-                    className={`w-full py-3.5 px-4 rounded-xl font-semibold text-sm flex items-center justify-between transition-all shadow-md group ${
-                      plan.isPopular
-                        ? "bg-emerald-600 hover:bg-emerald-500 text-white"
-                        : "bg-zinc-800 hover:bg-zinc-700 text-white"
-                    }`}
-                  >
-                    <span>{plan.ctaText}</span>
-                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </Link>
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <Link
+                      href={plan.ctaLink}
+                      className={`w-full py-3.5 px-4 rounded-xl font-semibold text-sm flex items-center justify-between transition-all shadow-md group ${
+                        plan.isPopular
+                          ? "bg-emerald-600 hover:bg-emerald-500 text-white"
+                          : "bg-zinc-800 hover:bg-zinc-700 text-white"
+                      }`}
+                    >
+                      <span>{plan.ctaText}</span>
+                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </Link>
+                  </motion.div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

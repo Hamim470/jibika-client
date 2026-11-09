@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { motion } from "motion/react";
 
 const StatsSection = () => {
   const stats = [
@@ -42,7 +45,13 @@ const StatsSection = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading & Subtitle */}
-        <div className="text-center max-w-2xl mx-auto mb-12">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="text-center max-w-2xl mx-auto mb-12"
+        >
           <span className="text-xs font-semibold uppercase tracking-widest text-emerald-400 bg-emerald-950/50 px-3 py-1 rounded-full border border-emerald-800/50">
             Platform Impact
           </span>
@@ -52,14 +61,19 @@ const StatsSection = () => {
           <p className="mt-2 text-sm text-zinc-400">
             Empowering organizations and job seekers with a fast, transparent, and data-driven hiring marketplace.
           </p>
-        </div>
+        </motion.div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat, index) => (
-            <div 
+            <motion.div 
               key={index} 
-              className="p-6 rounded-xl bg-zinc-900/60 border border-zinc-800/80 backdrop-blur-md flex flex-col justify-between hover:border-emerald-500/50 transition-all shadow-lg group"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
+              whileHover={{ y: -4 }}
+              className="p-6 rounded-xl bg-zinc-900/60 border border-zinc-800/80 backdrop-blur-md flex flex-col justify-between hover:border-emerald-500/50 transition-colors shadow-lg group"
             >
               <div>
                 <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight group-hover:text-emerald-400 transition-colors">
@@ -72,7 +86,7 @@ const StatsSection = () => {
               <p className="mt-4 text-xs text-zinc-400 leading-relaxed">
                 {stat.description}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
