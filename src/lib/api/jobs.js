@@ -1,7 +1,7 @@
 import { serverFetch } from "../core/server"
 
-export const getJobs=async()=>{
-    return serverFetch('/api/jobs')
+export const getJobs=async(queryString)=>{
+    return serverFetch(`/api/jobs?${queryString}`)
 }
 
 export const getJobById=async(jobId)=>{

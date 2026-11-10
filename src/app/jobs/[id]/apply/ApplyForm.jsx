@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { submitApplication } from "@/lib/actions/applications";
 import { toast } from '@heroui/react';
+import { useSession } from "@/lib/auth-client";
 
 export default function ApplyForm({ job, user }) {
   const router = useRouter();
+  const {role}=useSession();
 
   // Form states
   const [coverLetter, setCoverLetter] = useState("");
@@ -41,9 +43,9 @@ export default function ApplyForm({ job, user }) {
       if (res.insertedId) {
         setSuccess(true);
         toast.success("Application Submitted successfully.");
-        setTimeout(() => {
-          router.push("/dashboard");
-        }, 1500);
+        
+          router.push(`/dashboard/seeker`);
+        
       } else {
         throw new Error("Failed to submit application.");
       }

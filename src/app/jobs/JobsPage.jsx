@@ -1,42 +1,72 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import JobCard from "@/component/JobCard";
 import JobFilters from "@/component/JobFilters";
+import { useRouter } from "next/navigation";
+import { Pagination } from "@heroui/react";
 
-const JobsPage = ({ allJobs }) => {
-  const [jobs] = useState(allJobs || []);
-  
+const JobsPage = ({ jobs, filters,total }) => {
+  const router = useRouter();
+  const [page, setPage] = useState(filters.page || 1);
+  const itemsPerPage = 10;
+  const totalItems = total;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+console.log("-------",total)
   // Filter states
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedJobType, setSelectedJobType] = useState("All");
-  const [selectedLocation, setSelectedLocation] = useState("All");
+  const [searchQuery, setSearchQuery] = useState(filters?.search || "");
+  const [selectedCategory, setSelectedCategory] = useState(filters?.jobCategory || "All");
+  const [selectedType, setSelectedType] = useState(filters?.jobType || "All");
+  
 
-  // Filter logic
-  const filteredJobs = jobs.filter((job) => {
-    const matchesKeyword = 
-      job.title?.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-      job.company?.toLowerCase().includes(searchKeyword.toLowerCase());
-    
-    const matchesCategory = selectedCategory === "All" || job.category === selectedCategory;
-    const matchesJobType = selectedJobType === "All" || job.jobType === selectedJobType;
-    const matchesLocation = selectedLocation === "All" || job.city === selectedLocation;
+  useEffect(() => {
+    const sp = new URLSearchParams();
+    if (searchQuery) {
+      sp.set('search', searchQuery);
+    }
+    if (selectedType !== "All") {
+      sp.set('jobType', selectedType);
+    }
+    if (selectedCategory !== "All") {
+      sp.set('jobCategory', selectedCategory);
+    }
+    if (page) {
+      sp.set('page', page)
+    }
 
-    return matchesKeyword && matchesCategory && matchesJobType && matchesLocation;
-  });
-
-  const categories = ["All", "Software Development", "Digital Marketing", "Finance & Accounting", "UI/UX & Design", "E-Commerce & Retail"];
-  const jobTypes = ["All", "Full-time", "Part-time", "Remote", "Contract", "Internship"];
-  const cities = ["All", ...new Set(jobs.map((j) => j.city).filter(Boolean))];
+    const path = `?${sp.toString()}`;
+    router.push(path);
+  }, [router, searchQuery, selectedType, selectedCategory,page]);
 
   const handleResetFilters = () => {
-    setSearchKeyword("");
+    setSearchQuery("");
     setSelectedCategory("All");
-    setSelectedJobType("All");
-    setSelectedLocation("All");
+    setSelectedType("All");
   };
+
+  // pegination
+  const getPageNumbers = () => {
+    const pages = [];
+    pages.push(1);
+    if (page > 3) {
+      pages.push("ellipsis");
+    }
+    const start = Math.max(2, page - 1);
+    const end = Math.min(totalPages - 1, page + 1);
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    if (page < totalPages - 2) {
+      pages.push("ellipsis");
+    }
+    pages.push(totalPages);
+    return pages;
+  };
+
+  const startItem = (page-1)*itemsPerPage+1;
+  const endItem = Math.min(page*itemsPerPage,totalItems);
+
 
   return (
     <motion.div
@@ -58,8 +88,8 @@ const JobsPage = ({ allJobs }) => {
         <div className="max-w-xl mx-auto">
           <input
             type="text"
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by job title or company..."
             className="w-full px-5 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm shadow-inner"
           />
@@ -67,35 +97,62 @@ const JobsPage = ({ allJobs }) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Extracted Filter Sidebar Component */}
+        {/* Connected Filter Sidebar Component */}
         <JobFilters
-          searchKeyword={searchKeyword}
-          setSearchKeyword={setSearchKeyword}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
-          categories={categories}
-          selectedJobType={selectedJobType}
-          setSelectedJobType={setSelectedJobType}
-          jobTypes={jobTypes}
-          selectedLocation={selectedLocation}
-          setSelectedLocation={setSelectedLocation}
-          cities={cities}
+          selectedType={selectedType}
+          setSelectedType={setSelectedType}
           onReset={handleResetFilters}
         />
 
         {/* Job Listings Grid */}
         <div className="lg:col-span-3 space-y-4">
-          {filteredJobs.length === 0 ? (
+          {jobs.length === 0 ? (
             <div className="p-16 text-center rounded-2xl bg-zinc-900/60 border border-zinc-800 space-y-3">
               <p className="text-lg font-bold text-white">No jobs found</p>
-              <p className="text-sm text-zinc-400">Try adjusting your search keyword or filter criteria.</p>
+              <p className="text-sm text-zinc-400">Try adjusting your search Query or filter criteria.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4">
-              {filteredJobs.map((job) => (
-                <JobCard key={job._id} job={job} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 gap-4">
+                {jobs.map((job) => (
+                  <JobCard key={job._id} job={job} />
+                ))}
+              </div>
+              <Pagination className="w-full">
+                <Pagination.Summary>
+                  Showing {startItem}-{endItem} of {totalItems} results
+                </Pagination.Summary>
+                <Pagination.Content>
+                  <Pagination.Item>
+                    <Pagination.Previous isDisabled={page === 1} onPress={() => setPage((p) => p - 1)}>
+                      <Pagination.PreviousIcon />
+                      <span>Previous</span>
+                    </Pagination.Previous>
+                  </Pagination.Item>
+                  {getPageNumbers().map((p, i) =>
+                    p === "ellipsis" ? (
+                      <Pagination.Item key={`ellipsis-${i}`}>
+                        <Pagination.Ellipsis />
+                      </Pagination.Item>
+                    ) : (
+                      <Pagination.Item key={p}>
+                        <Pagination.Link isActive={p === page} onPress={() => setPage(p)}>
+                          {p}
+                        </Pagination.Link>
+                      </Pagination.Item>
+                    ),
+                  )}
+                  <Pagination.Item>
+                    <Pagination.Next isDisabled={page === totalPages} onPress={() => setPage((p) => p + 1)}>
+                      <span>Next</span>
+                      <Pagination.NextIcon />
+                    </Pagination.Next>
+                  </Pagination.Item>
+                </Pagination.Content>
+              </Pagination>
+            </>
           )}
         </div>
       </div>
